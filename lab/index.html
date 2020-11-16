@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Musiccessories</title>
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" type="text/css">
+  <script src="lab.js"></script>
+</head>
+
+<body>
+  <div class="mx-auto container">
+    <!-- Things you want to arrange horizontally need a flex container -->
+    <!-- items-center centers vertically -->
+    <div class="px-4 md:px-0 flex items-center mt-8">
+      <!-- Elements like h1, h2, h3, p, div are block-level elements -->
+      <h1 class="text-xl flex-auto">
+        <a href="index.html">
+          <span class="font-medium text-gray-500">Hi! Welcome to</span>
+          <span
+            class="font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">Musiccessories!</span>
+        </a>
+      </h1>
+
+      <p class="flex-auto text-right capitalize">
+        <!-- Elements like strong, em, span, img, a are inline elements -->
+        <!-- Inline elements are often nested inside block-level elements -->
+        <strong>No instruments.</strong> <em>Only accessories.</em>
+      </p>
+    </div>
+    <div class="md:-mx-4 mt-8 flex flex-wrap products">
+      <!-- JS code will put stuff here -->
+    </div>
+  </div>
+</body>
+
+</html>
