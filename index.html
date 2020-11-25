@@ -8,15 +8,12 @@
   <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" type="text/css">
   <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
   <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
-  <script src="firebase.js"></script>
+  <script src="shop.js"></script>
 </head>
 
 <body>
-  <div class="mx-auto container">
-    <!-- Things you want to arrange horizontally need a flex container -->
-    <!-- items-center centers vertically -->
+  <div class="space-y-4 mx-auto container">
     <div class="px-4 md:px-0 flex items-center mt-8">
-      <!-- Elements like h1, h2, h3, p, div are block-level elements -->
       <h1 class="text-xl flex-auto">
         <a href="index.html">
           <span class="font-medium text-gray-500">Hi! Welcome to</span>
@@ -25,13 +22,17 @@
       </h1>
 
       <p class="flex-auto text-right capitalize">
-        <!-- Elements like strong, em, span, img, a are inline elements -->
-        <!-- Inline elements are often nested inside block-level elements -->
         <button class="show-sign-in bg-purple-500 px-4 py-2 rounded-lg text-white focus:outline-none">Sign In or Sign Up</button>
         <button class="sign-out-button bg-red-500 px-4 py-2 rounded-lg text-white focus:outline-none hidden">Sign Out</button>
       </p>
     </div>
-    <div class="md:-mx-4 mt-8 flex flex-wrap products">
+
+    <div class="rounded bg-gray-100 border border-gray-200 px-4 py-2 cart md:flex items-center">
+      <div class="cart-count font-bold">Your cart is currently empty.</div>
+      <a class="checkout-button cursor-pointer rounded-xl font-sm bg-green-500 px-4 py-2 text-white ml-auto text-right">Checkout</a>
+    </div>
+
+    <div class="md:-mx-4 flex flex-wrap products">
       <!-- JS code will put stuff here -->
     </div>
   </div>

@@ -8,6 +8,7 @@ function loadPage() {
   let signInButton = document.querySelector('.sign-in-button')
   let signUpButton = document.querySelector('.sign-up-button')
   let signOutButton = document.querySelector('.sign-out-button')
+  let checkOutButton = document.querySelector('.checkout-button')
   
   // opens the sign-in form
   showSignInButton.addEventListener('click', function() {
@@ -30,6 +31,9 @@ function loadPage() {
     firebase.auth().signOut()
   })
 
+  // checkout button
+  checkOutButton.addEventListener('click', checkOut)
+
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
       showSignInButton.classList.add('hidden')
@@ -38,6 +42,7 @@ function loadPage() {
       showSignInButton.classList.remove('hidden')
       signOutButton.classList.add('hidden')
     }
+    updateCart()
   })
 }
 
@@ -109,7 +114,6 @@ function addToCart(productId) {
     .get()
     .then(function(orders) {
       if (orders.size == 0) {
-        console.log('creating an order')
         db.collection('orders').add({
           user: firebase.auth().currentUser.uid,
           complete: false
@@ -118,10 +122,11 @@ function addToCart(productId) {
             order: newOrder.id,
             product: productId,
             quantity: 1
+          }).then(function() {
+            updateCart()
           })
         })
       } else {
-        console.log('order exists')
         let orderId = orders.docs[0].id
         db.collection('items')
           .where('order', '==', orderId)
@@ -129,19 +134,77 @@ function addToCart(productId) {
           .get()
           .then(function(items) {
             if (items.size == 0) {
-              console.log('no items for that order and product, creating')
               db.collection('items').add({
                 order: orderId,
                 product: productId,
                 quantity: 1
+              }).then(function() {
+                updateCart()
               })
             } else {
-              console.log('existing item for that order and product, incrementing quantity')
               db.collection('items').doc(items.docs[0].id).update({
                 quantity: items.docs[0].data().quantity + 1
+              }).then(function() {
+                updateCart()
               })
             }
           })
+      }
+    })
+}
+
+function updateCart() {
+  if (firebase.auth().currentUser == null) {
+    document.querySelector('.cart-count').innerHTML = 'Your cart is currently empty.'
+    document.querySelector('.checkout-button').classList.add('hidden')
+  } else {
+    const db = firebase.firestore()
+    db.collection('orders')
+      .where('user', '==', firebase.auth().currentUser.uid)
+      .where('complete', '==', false)
+      .get()
+      .then(function(orders) {
+        if (orders.size > 0) {
+          let orderId = orders.docs[0].id
+          db.collection('items')
+            .where('order', '==', orderId)
+            .get()
+            .then(function(items) {
+              let itemsCount = 0
+              if (items.size > 0) {
+                for(let i=0; i<items.size; i++) {
+                  itemsCount = itemsCount + items.docs[i].data().quantity
+                }
+                document.querySelector('.cart-count').innerHTML = `You have ${itemsCount} item(s) in your cart.`
+                document.querySelector('.checkout-button').classList.remove('hidden')
+              } else {
+                document.querySelector('.cart-count').innerHTML = 'Your cart is currently empty.'
+                document.querySelector('.checkout-button').classList.add('hidden')
+              }
+            })
+        } else {
+          document.querySelector('.cart-count').innerHTML = 'Your cart is currently empty.'
+          document.querySelector('.checkout-button').classList.add('hidden')
+        }
+      })
+  }
+}
+
+function checkOut(event) {
+  event.preventDefault()
+  const db = firebase.firestore()
+  db.collection('orders')
+    .where('user', '==', firebase.auth().currentUser.uid)
+    .where('complete', '==', false)
+    .get()
+    .then(function(orders) {
+      if (orders.size > 0) {
+        let orderId = orders.docs[0].id
+        db.collection('orders').doc(orderId).update({
+          complete: true
+        }).then(function() {
+          updateCart()
+        })
       }
     })
 }
